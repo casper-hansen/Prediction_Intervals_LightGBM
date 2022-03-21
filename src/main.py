@@ -1,9 +1,7 @@
-import numpy as np
 import lightgbm as lgb
+import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 from data_loader import x_train, x_test, y_train, y_test
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # mean prediction
 regressor = lgb.LGBMRegressor()

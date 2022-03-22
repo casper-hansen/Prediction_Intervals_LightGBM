@@ -1,10 +1,22 @@
 # Prediction Intervals Explained: A LightGBM Tutorial
 
-When we are performing regression tasks, we have the option to generate prediction intervals, which is not the case when doing classification. We generate prediction intervals using quantile regression.
+When we are performing regression tasks, we have the option to generate prediction intervals, which is not the case when doing classification. We generate prediction intervals using quantile regression, which is a fancy way of estimating the median value for a regression value in a specific quantile.
 
 ## Background
 
+LightGBM is one of the fastest and most accurate libraries for regression tasks. To add even more utility into the model, they have implemented prediction intervals for the community to be able to give a range of possible values.
+
+Simply put, a prediction interval is just about generating a lower and upper bound on the final regression value. This is incredibly important for some tasks, which we will further elaborate on now.
+
 ### Why use them?
+
+We can never be 100% certain about one prediction from one model, so instead, the idea is to give an interval back to a person who ends up controlling the final decision based on the range given by the model. For example, if we are trying to set the price for a house, it is common knowledge that the price is incredibly dependent on how well maintained and renovated it is.
+
+Therefore, we want to give a range - and if the house is poorly maintained, perhaps the price would land in the lower end of the price interval.
+
+### Mathematics
+
+Math
 
 ## Python Example
 

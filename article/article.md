@@ -14,9 +14,11 @@ We can never be 100% certain about one prediction from one model, so instead, th
 
 Therefore, we want to give a range - and if the house is poorly maintained, perhaps the price would land in the lower end of the price interval.
 
-### Mathematics
+### Quantile Regression Explained
 
-Math
+In the typical linear regression model, we are tracking the mean difference from the ground truth to optimize the model. However, in quantile regression, as the name suggests, we track a specific quantile (also know as a percentile) against the median of the ground truth.
+
+This specific approach enables us to specify the quantiles. For example, we most often specify that we want the 5% quantile (covering 5% of the data) and the 95% quantile (covering 95% of the data). This gives us a lower and upper boundary that we can use as our smallest and highest estimate in a regression task.
 
 ## Python Example
 

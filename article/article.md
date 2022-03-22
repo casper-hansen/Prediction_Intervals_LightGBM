@@ -20,6 +20,10 @@ In the typical linear regression model, we are tracking the mean difference from
 
 This specific approach enables us to specify the quantiles. For example, we most often specify that we want the 5% quantile (covering 5% of the data) and the 95% quantile (covering 95% of the data). This gives us a lower and upper boundary that we can use as our smallest and highest estimate in a regression task.
 
+You might ask: Why is it important to estimate these quantiles using the median rather than the mean? The problem with just using the mean is when outliers are present. This can sometimes result in poor predictions because the mean of a group of values heavily emphasizes the outlier values. Therefore, when using the median, we avoid being prone to outliers and end up producing better lower and upper boundaries.
+
+Additionally, unlike with Linear Regression, we do not make any assumptions about the distribution of the data, which makes it even more useful and more accurate in certain scenarios.
+
 ## Python Example
 
 To make prediction intervals, we need a lower bound and upper bound for the prediction we generate using our model. To generate these bounds, we use the following method:
@@ -107,3 +111,14 @@ plt.legend()
 
 plt.show()
 ```
+
+## Conclusion
+
+In this article, you learned.
+
+## References
+
+1. https://www.ibm.com/docs/en/spss-statistics/27.0.0?topic=regression-quantile
+2. http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html
+3. https://medium.com/the-artificial-impostor/quantile-regression-part-2-6fdbc26b2629
+4. https://www.wikiwand.com/en/Quantile_regression

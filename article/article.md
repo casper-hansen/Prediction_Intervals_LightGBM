@@ -18,11 +18,46 @@ Therefore, we want to give a range - and if the house is poorly maintained, perh
 
 In the typical linear regression model, we are tracking the mean difference from the ground truth to optimize the model. However, in quantile regression, as the name suggests, we track a specific quantile (also know as a percentile) against the median of the ground truth.
 
-This specific approach enables us to specify the quantiles. For example, we most often specify that we want the 5% quantile (covering 5% of the data) and the 95% quantile (covering 95% of the data). This gives us a lower and upper boundary that we can use as our smallest and highest estimate in a regression task.
+#### Quantiles & Assumptions
+
+Using the median approach enables us to specify the quantiles. For example, we most often specify that we want the 5% quantile (covering 5% of the data) and the 95% quantile (covering 95% of the data). This gives us a lower and upper boundary that we can use as our smallest and highest estimate in a regression task.
 
 You might ask: Why is it important to estimate these quantiles using the median rather than the mean? The problem with just using the mean is when outliers are present. This can sometimes result in poor predictions because the mean of a group of values heavily emphasizes the outlier values. Therefore, when using the median, we avoid being prone to outliers and end up producing better lower and upper boundaries.
 
 Additionally, unlike with Linear Regression, we do not make any assumptions about the distribution of the data, which makes it even more useful and more accurate in certain scenarios.
+
+#### Regression
+
+For linear regression, the following is the equation you will most often see used to make predictions (referring to [objective function](http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html#Objective-Function)):
+
+$
+\begin{align}
+Y = \theta_0 + \theta_1X_1 + \theta_2X_2 + \ldots + \theta_pX_p + \epsilon
+\end{align}
+$
+
+However, we have to understand this is incredibly "linear" and will only work well for linear problems. The following is the loss function for optimizing the linear regression:
+
+$
+\begin{align}
+L = (y - X\theta)^2
+\end{align}
+$
+
+That changes in quantile regression because we need to be able to account for the different quantiles. 
+
+- When the alpha is high (for example, 0.95), the errors that are less than zero receive a lower error value than if they are greater than zero. 
+- In reverse, when the alpha is low (for example, 0.05), the errors that are less than zero receive a higher error value than if they are greater than zero, where they will receive a smaller error value.
+
+$
+\begin{align}
+L &=
+\begin{cases}
+\alpha(y - X\theta), \; if \; (y - X\theta) \geq 0 \\
+(\alpha - 1)(y - X\theta), \; if \; (y - X\theta) < 0
+\end{cases}
+\end{align}
+$
 
 ## Python Example
 

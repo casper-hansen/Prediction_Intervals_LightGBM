@@ -59,6 +59,8 @@ L &=
 \end{align}
 $
 
+Now that we have seen how the loss function is calculated for a quantile regression model, we are fully prepared to dive into the Python example prepared for this article.
+
 ## Python Example
 
 To make prediction intervals, we need a lower bound and upper bound for the prediction we generate using our model. To generate these bounds, we use the following method:
@@ -67,9 +69,19 @@ To make prediction intervals, we need a lower bound and upper bound for the pred
 2. Train your model for making predictions on your dataset.
 3. Train two models, one for the lower bound and another for the upper bound. We need to set two parameters for this to work: objective and alpha.
 
+However, to train any model, we first need to find a suitable dataset for our use-case, which we will show shortly.
+
 ### Data Loading & Preparation
 
-Packages
+For this article, we have chosen the [California Housing](https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html) dataset. Below, you can see 4 out of the 8 available features in the dataset with a sample row of data. Upon inspection of the data, we can spot that there are built-in features to help us predict the price of a house, for example the median income of the family.
+
+
+|MedInc|HouseAge|AveRooms|...|Longitude|
+|---|---|---|---|---|
+|3.2596|33.0|5.017657|...|-117.03|
+
+
+We only need a few packages to take care of loading the data and preparing it for use in a LightGBM model. For loading and preprocessing the data, we only need the Pandas and Scikit-Learn package:
 
 ```python
 import pandas as pd
@@ -77,7 +89,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 ```
 
-Data loader function
+To load the data, we define a generic function that takes the data loader object from the Scikit-Learn datasets module. This function will simply load the data and split it into input (x) and output (y) in Pandas dataframes.
 
 ```python
 
@@ -92,7 +104,7 @@ def sklearn_to_df(data_loader):
     return x, y
 ```
 
-Call data loader and split data
+After defining the data loader function, we can call it and get the input and output data, as we just explained. Furthermore, we need to split this into training and testing datasets, so we conveniently use the `train_test_split` function that the Scikit-Learn package comes with.
 
 ```python
 x, y = sklearn_to_df(fetch_california_housing())
@@ -100,6 +112,8 @@ x, y = sklearn_to_df(fetch_california_housing())
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, random_state=42)
 ```
+
+Now that our training and testing data is ready for modelling, we can proceed into the practical example of this article on the prediction intervals using LightGBM.
 
 ### Prediction Intervals
 

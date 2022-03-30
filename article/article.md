@@ -73,13 +73,11 @@ However, to train any model, we first need to find a suitable dataset for our us
 
 ### Data Loading & Preparation
 
-For this article, we have chosen the [California Housing](https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html) dataset. Below, you can see 4 out of the 8 available features in the dataset with a sample row of data. Upon inspection of the data, we can spot that there are built-in features to help us predict the price of a house, for example the median income of the family.
-
+For this article, we have chosen the [California Housing](https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html) dataset. Below, you can see 4 out of the 8 available features in the dataset with a sample row of data. Upon inspection of the data, we can spot that there are built-in features to help us predict the price of a house, for example the median income (in thousands of dollars) of the family.
 
 |MedInc|HouseAge|AveRooms|...|Longitude|
 |---|---|---|---|---|
 |3.2596|33.0|5.017657|...|-117.03|
-
 
 We only need a few packages to take care of loading the data and preparing it for use in a LightGBM model. For loading and preprocessing the data, we only need the Pandas and Scikit-Learn package:
 
@@ -117,6 +115,8 @@ Now that our training and testing data is ready for modelling, we can proceed in
 
 ### Prediction Intervals
 
+We move into the modelling part of the article - and we need a few packages to start with. We need the LightGBM package as that is our model, and then Scikit-Learn and Matplotlib for utilities along the way. Additionally, we load the data from the data loader explained in the previous section.
+
 ```python
 import lightgbm as lgb
 import matplotlib.pyplot as plt
@@ -124,11 +124,15 @@ from sklearn.metrics import r2_score
 from data_loader import x_train, x_test, y_train, y_test
 ```
 
+We start by training our regular regression model for predicting the price of the house. This is the standard procedure where we define the model and fit it to the training data (`x_train` and `y_train`). Additionally, we also let the fitted model make predictions on the test set `x_test`
+
 ```python
 regressor = lgb.LGBMRegressor()
 regressor.fit(x_train, y_train)
 regressor_pred = regressor.predict(x_test)
 ```
+
+To train the lower bound model, we specify the quantile and alpha parameter, and then the procedure is exactly the same as when we are training any other LightGBM model.
 
 ```python
 lower = lgb.LGBMRegressor(objective = 'quantile', alpha = 1 - 0.95)
@@ -136,16 +140,28 @@ lower.fit(x_train, y_train)
 lower_pred = lower.predict(x_test)
 ```
 
+The same approach goes for the upper bound model - we specify the quantile and alpha parameter, we train the model, and then finally make predictions.
+
 ```python
 upper = lgb.LGBMRegressor(objective = 'quantile', alpha = 0.95)
 upper.fit(x_train, y_train)
 upper_pred = upper.predict(x_test)
 ```
 
+After this, we still want to check how well our model performs. We only measure our *normal* model and not the upper or lower bound models. This is because the score is unreliable for these quantile regression models since it will tell you the most probable lower or upper prediction. Essentially, that would mean we could get an r-squared score of 0.3 without being able to use this as our final score of the model.
+
 ```python
 score = r2_score(y_test, regressor_pred)
 print(score)
 ```
+
+Finally, we get the r-squared score of 0.836, which is decent for a regression model.
+
+To wrap up the article, we will shortly describe how to plot the final values of the model. 
+
+The first few lines (1-5) creates the plot and "scatter" our data points by the test feature "MedInc" and the house price together on our coordinate system. We mark the lower bound with a green color, the regression model's predictions with the aqua/teal color, and our upper bound with a strong dodgerblue. 
+
+Additionally, we want to plot a line through the middle of all the points to distinguish where we would normally cut off the lower and upper bounds when making a final decision on the price of a house. Therefore, we use the plot function and make sure to sort both the MedInc test feature and the predictions so that they fit into the plot.
 
 ```python
 plt.figure(figsize=(10, 6))
@@ -161,13 +177,17 @@ plt.legend()
 plt.show()
 ```
 
+Finally, we produce the actual chart and show it below. Everything that we just described is something that you can see. The x-axis is the MedInc feature and the y-axis is the house price prediction:
+
+![](images/prediction_intervals.png)
+
 ## Conclusion
 
-In this article, you learned.
+In this article, you learned both the theoretical and practical approach to make a regression model that includes the upper and lower bounds to form prediction intervals. Additionally, this will now be in your toolbox when you need to perform regression tasks in the future on other datasets.
 
 ## References
 
-1. https://www.ibm.com/docs/en/spss-statistics/27.0.0?topic=regression-quantile
-2. http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html
-3. https://medium.com/the-artificial-impostor/quantile-regression-part-2-6fdbc26b2629
-4. https://www.wikiwand.com/en/Quantile_regression
+1. IBM has some short explanations on quantile regression: [IBM - Regression Quantile](https://www.ibm.com/docs/en/spss-statistics/27.0.0?topic=regression-quantile)
+2. Ethen8181, a github user, has a nice Jupyter Notebook with small explanations of the math and the equivalent implementation: [Ethan8181 - Quantile Regression](http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html)
+3. Ceshine Lee gives great explanations on quantile regression including code in Tensorflow and Pytorch: [Ceshine Lee - Quantile Regression Part 2](https://medium.com/the-artificial-impostor/quantile-regression-part-2-6fdbc26b2629)
+4. Wikiwand has a great introduction explanation to quantile regression: [Wikiwand - Quantile Regression](https://www.wikiwand.com/en/Quantile_regression)

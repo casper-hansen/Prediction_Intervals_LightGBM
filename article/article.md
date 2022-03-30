@@ -4,7 +4,7 @@ When we are performing regression tasks, we have the option to generate predicti
 
 ## Background
 
-LightGBM is one of the fastest and most accurate libraries for regression tasks. To add even more utility into the model, they have implemented prediction intervals for the community to be able to give a range of possible values.
+LightGBM is one of the fastest and most accurate libraries for regression tasks. To add even more utility to the model, they have implemented prediction intervals for the community to be able to give a range of possible values.
 
 Simply put, a prediction interval is just about generating a lower and upper bound on the final regression value. This is incredibly important for some tasks, which we will further elaborate on now.
 
@@ -16,7 +16,7 @@ Therefore, we want to give a range - and if the house is poorly maintained, perh
 
 ### Quantile Regression Explained
 
-In the typical linear regression model, we are tracking the mean difference from the ground truth to optimize the model. However, in quantile regression, as the name suggests, we track a specific quantile (also know as a percentile) against the median of the ground truth.
+In the typical linear regression model, we are tracking the mean difference from the ground truth to optimize the model. However, in quantile regression, as the name suggests, we track a specific quantile (also known as a percentile) against the median of the ground truth.
 
 #### Quantiles & Assumptions
 
@@ -24,7 +24,7 @@ Using the median approach enables us to specify the quantiles. For example, we m
 
 You might ask: Why is it important to estimate these quantiles using the median rather than the mean? The problem with just using the mean is when outliers are present. This can sometimes result in poor predictions because the mean of a group of values heavily emphasizes the outlier values. Therefore, when using the median, we avoid being prone to outliers and end up producing better lower and upper boundaries.
 
-Additionally, unlike with Linear Regression, we do not make any assumptions about the distribution of the data, which makes it even more useful and more accurate in certain scenarios.
+Additionally, unlike Linear Regression, we do not make any assumptions about the distribution of the data, which makes it even more useful and more accurate in certain scenarios.
 
 #### Regression
 
@@ -65,15 +65,15 @@ Now that we have seen how the loss function is calculated for a quantile regress
 
 To make prediction intervals, we need a lower bound and upper bound for the prediction we generate using our model. To generate these bounds, we use the following method:
 
-1. Choose a prediction interval, usually we set it to 95% or 0.95 — we call this the alpha parameter ($\alpha$) when making prediction intervals.
+1. Choose a prediction interval, usually, we set it to 95% or 0.95 — we call this the alpha parameter ($\alpha$) when making prediction intervals.
 2. Train your model for making predictions on your dataset.
 3. Train two models, one for the lower bound and another for the upper bound. We need to set two parameters for this to work: objective and alpha.
 
-However, to train any model, we first need to find a suitable dataset for our use-case, which we will show shortly.
+However, to train any model, we first need to find a suitable dataset for our use case, which we will show shortly.
 
 ### Data Loading & Preparation
 
-For this article, we have chosen the [California Housing](https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html) dataset. Below, you can see 4 out of the 8 available features in the dataset with a sample row of data. Upon inspection of the data, we can spot that there are built-in features to help us predict the price of a house, for example the median income (in thousands of dollars) of the family.
+For this article, we have chosen the [California Housing](https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html) dataset. Below, you can see 4 out of the 8 available features in the dataset with a sample row of data. Upon inspection of the data, we can spot that there are built-in features to help us predict the price of a house, for example, the median income (in thousands of dollars) of the family.
 
 |MedInc|HouseAge|AveRooms|...|Longitude|
 |---|---|---|---|---|
@@ -87,7 +87,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 ```
 
-To load the data, we define a generic function that takes the data loader object from the Scikit-Learn datasets module. This function will simply load the data and split it into input (x) and output (y) in Pandas dataframes.
+To load the data, we define a generic function that takes the data loader object from the Scikit-Learn datasets module. This function will simply load the data and split it into input (x) and output (y) in Pandas data frames.
 
 ```python
 
@@ -159,7 +159,7 @@ Finally, we get the r-squared score of 0.836, which is decent for a regression m
 
 To wrap up the article, we will shortly describe how to plot the final values of the model. 
 
-The first few lines (1-5) creates the plot and "scatter" our data points by the test feature "MedInc" and the house price together on our coordinate system. We mark the lower bound with a green color, the regression model's predictions with the aqua/teal color, and our upper bound with a strong dodgerblue. 
+The first few lines (1-5) create the plot and "scatter" our data points by the test feature "MedInc" and the house price together on our coordinate system. We mark the lower bound with a green color, the regression model's predictions with the aqua/teal color, and our upper bound with a strong dodger blue. 
 
 Additionally, we want to plot a line through the middle of all the points to distinguish where we would normally cut off the lower and upper bounds when making a final decision on the price of a house. Therefore, we use the plot function and make sure to sort both the MedInc test feature and the predictions so that they fit into the plot.
 
@@ -183,11 +183,11 @@ Finally, we produce the actual chart and show it below. Everything that we just 
 
 ## Conclusion
 
-In this article, you learned both the theoretical and practical approach to make a regression model that includes the upper and lower bounds to form prediction intervals. Additionally, this will now be in your toolbox when you need to perform regression tasks in the future on other datasets.
+In this article, you learned both the theoretical and practical approaches to making a regression model that includes the upper and lower bounds to form prediction intervals. Additionally, this will now be in your toolbox when you need to perform regression tasks in the future on other datasets.
 
 ## References
 
 1. IBM has some short explanations on quantile regression: [IBM - Regression Quantile](https://www.ibm.com/docs/en/spss-statistics/27.0.0?topic=regression-quantile)
-2. Ethen8181, a github user, has a nice Jupyter Notebook with small explanations of the math and the equivalent implementation: [Ethan8181 - Quantile Regression](http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html)
+2. Ethen8181, a GitHub user, has a nice Jupyter Notebook with small explanations of the math and the equivalent implementation: [Ethan8181 - Quantile Regression](http://ethen8181.github.io/machine-learning/ab_tests/quantile_regression/quantile_regression.html)
 3. Ceshine Lee gives great explanations on quantile regression including code in Tensorflow and Pytorch: [Ceshine Lee - Quantile Regression Part 2](https://medium.com/the-artificial-impostor/quantile-regression-part-2-6fdbc26b2629)
 4. Wikiwand has a great introduction explanation to quantile regression: [Wikiwand - Quantile Regression](https://www.wikiwand.com/en/Quantile_regression)
